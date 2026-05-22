@@ -6,7 +6,6 @@ import { TestimonialsSection } from '@/components/home/TestimonialsSection'
 import { ScheduleSection } from '@/components/home/ScheduleSection'
 import { CtaBanner } from '@/components/home/CtaBanner'
 import { prisma } from '@/lib/prisma'
-import type { Service } from '@prisma/client'
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params
@@ -35,7 +34,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     }),
   ])
 
-  const services = servicesRaw.map((service: Service) => ({
+  const services = servicesRaw.map((service: (typeof servicesRaw)[number]) => ({
     ...service,
     imageUrl:
       service.imageUrl ??
