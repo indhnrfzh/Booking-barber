@@ -103,7 +103,7 @@ export async function getAvailableSlotsForDate(params: {
     const candidateStart = currentMin
     const candidateEnd = currentMin + requestedDuration
 
-    const hasOverlap = bookings.some((booking) => {
+    const hasOverlap = bookings.some((booking: { timeSlot: string; service: { duration: number } }) => {
       const bookedStart = timeToMinutes(booking.timeSlot)
       const bookedEnd = bookedStart + booking.service.duration
       return candidateStart < bookedEnd && candidateEnd > bookedStart
