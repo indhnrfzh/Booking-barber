@@ -1,7 +1,12 @@
-// Prisma configuration file
-// Database connection is configured via DATABASE_URL environment variable
-// See: https://pris.ly/d/prisma7-client-config
+import 'dotenv/config'
+import { defineConfig } from 'prisma/config'
 
-const prismaConfig = {}
-
-export default prismaConfig
+export default defineConfig({
+	schema: 'prisma/schema.prisma',
+	migrations: {
+		path: 'prisma/migrations',
+	},
+	datasource: {
+		url: process.env.DATABASE_URL,
+	},
+})
