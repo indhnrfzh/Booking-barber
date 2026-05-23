@@ -8,12 +8,21 @@ import { Button } from '@/components/ui/Button'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
-export function AboutSection() {
+interface StatSetting {
+  value: string
+  label: string
+}
+
+interface AboutSectionProps {
+  stats?: StatSetting[]
+}
+
+export function AboutSection({ stats: statsProp }: AboutSectionProps) {
   const t = useTranslations('about')
   const pathname = usePathname()
   const locale = pathname.split('/')[1] || 'id'
 
-  const stats = [
+  const stats = statsProp ?? [
     { label: t('stat1'), value: '500+' },
     { label: t('stat2'), value: '10+' },
     { label: t('stat3'), value: '5★' },

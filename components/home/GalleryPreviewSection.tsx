@@ -3,24 +3,23 @@
 import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/Button'
 import { GoldDivider } from '@/components/ui/GoldDivider'
 import { SectionLabel } from '@/components/ui/SectionLabel'
 
-export function GalleryPreviewSection() {
-  const t = useTranslations('gallery')
-  const pathname = usePathname()
-  const locale = pathname.split('/')[1] || 'id'
+interface GalleryPreviewPhoto {
+  id: string
+  src: string
+  alt: string | null
+}
 
-  const galleryPhotos = [
-    { id: 1, src: 'https://picsum.photos/seed/gallery-1/600/500', alt: 'Haircut 1' },
-    { id: 2, src: 'https://picsum.photos/seed/gallery-2/600/500', alt: 'Haircut 2' },
-    { id: 3, src: 'https://picsum.photos/seed/gallery-3/600/500', alt: 'Haircut 3' },
-    { id: 4, src: 'https://picsum.photos/seed/gallery-4/600/500', alt: 'Haircut 4' },
-    { id: 5, src: 'https://picsum.photos/seed/gallery-5/600/500', alt: 'Haircut 5' },
-    { id: 6, src: 'https://picsum.photos/seed/gallery-6/600/500', alt: 'Haircut 6' },
-  ]
+interface GalleryPreviewSectionProps {
+  locale: string
+  galleryPhotos: GalleryPreviewPhoto[]
+}
+
+export function GalleryPreviewSection({ locale, galleryPhotos }: GalleryPreviewSectionProps) {
+  const t = useTranslations('gallery')
 
   return (
     <section className="section-py bg-[#0A0A0A]">
@@ -49,7 +48,7 @@ export function GalleryPreviewSection() {
             >
               <Image
                 src={photo.src}
-                alt={photo.alt}
+                alt={photo.alt || `Gallery ${idx + 1}`}
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 className="object-cover group-hover:scale-110 transition-transform duration-300"

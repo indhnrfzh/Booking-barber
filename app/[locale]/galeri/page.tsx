@@ -2,34 +2,57 @@
 
 import { useTranslations } from 'next-intl'
 import Image from 'next/image'
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
-const galleryImages = [
-  { id: 1, src: 'https://picsum.photos/seed/gallery-full-1/800/800', category: 'fade' },
-  { id: 2, src: 'https://picsum.photos/seed/gallery-full-2/800/800', category: 'beard' },
-  { id: 3, src: 'https://picsum.photos/seed/gallery-full-3/800/800', category: 'pompadour' },
-  { id: 4, src: 'https://picsum.photos/seed/gallery-full-4/800/800', category: 'undercut' },
-  { id: 5, src: 'https://picsum.photos/seed/gallery-full-5/800/800', category: 'fade' },
-  { id: 6, src: 'https://picsum.photos/seed/gallery-full-6/800/800', category: 'pompadour' },
-  { id: 7, src: 'https://picsum.photos/seed/gallery-full-7/800/800', category: 'undercut' },
-  { id: 8, src: 'https://picsum.photos/seed/gallery-full-8/800/800', category: 'beard' },
-  { id: 9, src: 'https://picsum.photos/seed/gallery-full-9/800/800', category: 'fade' },
-]
+interface GalleryImage {
+  id: string
+  src: string
+  category: string
+  alt: string | null
+}
 
 export default function GaleriPage() {
   const t = useTranslations('gallery')
+  const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([])
+  const [loading, setLoading] = useState(true)
   const [activeCategory, setActiveCategory] = useState('all')
-  const [selectedImage, setSelectedImage] = useState<number | null>(null)
+  const [selectedImage, setSelectedImage] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchImages = async () => {
+      try {
+        setLoading(true)
+        const response = await fetch('/api/gallery')
+        const data = await response.json()
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to fetch gallery images')
+        }
+
+        setGalleryImages(data.images)
+      } catch (error) {
+        console.error(error)
+        setGalleryImages([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchImages()
+  }, [])
 
   const filteredImages = activeCategory === 'all' ? galleryImages : galleryImages.filter((img) => img.category === activeCategory)
 
-  const categories = [
-    { id: 'all', label: 'Semua' },
-    { id: 'fade', label: 'Fade' },
-    { id: 'pompadour', label: 'Pompadour' },
-    { id: 'undercut', label: 'Undercut' },
-    { id: 'beard', label: 'Beard' },
-  ]
+  const categories = useMemo(() => {
+    const dynamicCategories = Array.from(new Set(galleryImages.map((image) => image.category)))
+    return [
+      { id: 'all', label: 'Semua' },
+      ...dynamicCategories.map((category) => ({
+        id: category,
+        label: category.charAt(0).toUpperCase() + category.slice(1),
+      })),
+    ]
+  }, [galleryImages])
 
   return (
     <>
@@ -66,8 +89,13 @@ export default function GaleriPage() {
           </div>
 
           {/* Masonry Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredImages.map((image) => (
+          {loading ? (
+            <div className="rounded-lg border border-[#2A2A25] bg-[#141414] p-6 text-center text-[#808078]">
+              Loading gallery images...
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredImages.map((image) => (
               <div
                 key={image.id}
                 className="relative group cursor-pointer h-64 sm:h-80 overflow-hidden rounded-lg"
@@ -75,7 +103,7 @@ export default function GaleriPage() {
               >
                 <Image
                   src={image.src}
-                  alt={`Gallery ${image.id}`}
+                  alt={image.alt || `Gallery ${image.id}`}
                   fill
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   className="object-cover group-hover:scale-110 transition-transform duration-300"
@@ -87,8 +115,9 @@ export default function GaleriPage() {
                   </svg>
                 </div>
               </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -101,7 +130,7 @@ export default function GaleriPage() {
           <div className="relative w-full max-w-4xl h-[72dvh] max-h-[72dvh] sm:h-[80dvh] sm:max-h-[80dvh] md:h-150 md:max-h-150" onClick={(e) => e.stopPropagation()}>
             <Image
               src={galleryImages.find((img) => img.id === selectedImage)?.src || ''}
-              alt="Gallery full"
+              alt={galleryImages.find((img) => img.id === selectedImage)?.alt || 'Gallery full'}
               fill
               sizes="100vw"
               className="object-contain"
