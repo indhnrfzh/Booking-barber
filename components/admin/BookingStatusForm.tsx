@@ -40,7 +40,7 @@ export function BookingStatusForm({ bookingId, currentStatus }: BookingStatusFor
 
       toast.success('Status updated successfully')
       router.refresh()
-    } catch (error) {
+    } catch {
       toast.error('An error occurred')
       setLoading(false)
       setSelectedStatus(currentStatus)

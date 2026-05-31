@@ -95,7 +95,7 @@ export function ServiceForm({ service, onClose, onSuccess }: ServiceFormProps) {
       toast.success(service ? 'Service updated successfully' : 'Service created successfully')
       onSuccess()
       router.refresh()
-    } catch (error) {
+    } catch {
       toast.error('An error occurred')
       setLoading(false)
     }
@@ -228,6 +228,8 @@ export function ServiceForm({ service, onClose, onSuccess }: ServiceFormProps) {
               <div className="rounded-lg border border-[#2A2A25] bg-[#141414] p-3">
                 <p className="text-xs text-[#C9A84C] mb-2">Preview</p>
                 <div className="h-32 sm:h-40 w-full overflow-hidden rounded-md bg-[#0A0A0A]">
+                  {/* Data URL and arbitrary external previews are supported from admin input. */}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={formData.imageUrl}
                     alt="Service preview"

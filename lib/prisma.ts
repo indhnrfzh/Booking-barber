@@ -13,10 +13,29 @@ if (!databaseUrl) {
   throw new Error('DATABASE_URL is not set')
 }
 
+function normalizeDatabaseUrl(rawUrl: string): string {
+  try {
+    const url = new URL(rawUrl)
+    const sslMode = url.searchParams.get('sslmode')
+
+    // pg-connection-string warns for these legacy aliases; make intent explicit.
+    if (sslMode === 'prefer' || sslMode === 'require' || sslMode === 'verify-ca') {
+      url.searchParams.set('sslmode', 'verify-full')
+    }
+
+    return url.toString()
+  } catch {
+    // Keep original value if parsing fails (e.g. unexpected custom URL format).
+    return rawUrl
+  }
+}
+
+const normalizedDatabaseUrl = normalizeDatabaseUrl(databaseUrl)
+
 const pool =
   globalForPrisma.pool ||
   new Pool({
-    connectionString: databaseUrl,
+    connectionString: normalizedDatabaseUrl,
   })
 
 export const prisma =

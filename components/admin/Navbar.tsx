@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter, usePathname } from 'next/navigation'
-import { Button } from '@/components/ui/Button'
 import toast from 'react-hot-toast'
 
 interface AdminNavbarProps {
@@ -38,7 +37,7 @@ export function AdminNavbar({ admin }: AdminNavbarProps) {
         router.push('/admin/login')
         router.refresh()
       }
-    } catch (error) {
+    } catch {
       toast.error('Logout failed')
     }
   }

@@ -35,7 +35,7 @@ export default function AdminLoginPage() {
       toast.success('Login successful!')
       router.push('/admin/dashboard')
       router.refresh()
-    } catch (error) {
+    } catch {
       toast.error('An error occurred during login')
       setLoading(false)
     }

@@ -22,7 +22,7 @@ export async function getAdminUser() {
       username: verified.payload.username as string,
       role: verified.payload.role as string,
     }
-  } catch (error) {
+  } catch {
     redirect('/admin/login')
   }
 }

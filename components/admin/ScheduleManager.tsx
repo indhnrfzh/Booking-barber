@@ -66,7 +66,7 @@ export function ScheduleManager({ schedules }: ScheduleManagerProps) {
       toast.success('Schedule updated successfully')
       setEditingId(null)
       router.refresh()
-    } catch (error) {
+    } catch {
       toast.error('An error occurred')
       setLoading(false)
     }

@@ -35,7 +35,7 @@ export function ServicesTable({ services }: ServicesTableProps) {
 
       toast.success('Service deleted successfully')
       router.refresh()
-    } catch (error) {
+    } catch {
       toast.error('An error occurred')
     }
   }

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Booking } from '@prisma/client'
 import { BookingStatusForm } from './BookingStatusForm'
 import { Badge } from '@/components/ui/Badge'
@@ -32,7 +32,7 @@ export function BookingsTable({ bookings }: BookingsTableProps) {
     applyFilters(statusFilter, term)
   }
 
-  const applyFilters = (status: string, search: string) => {
+  const applyFilters = useCallback((status: string, search: string) => {
     let filtered = bookings
 
     if (status !== 'all') {
@@ -49,11 +49,11 @@ export function BookingsTable({ bookings }: BookingsTableProps) {
     }
 
     setFilteredBookings(filtered)
-  }
+  }, [bookings])
 
   useEffect(() => {
     applyFilters(statusFilter, searchTerm)
-  }, [bookings])
+  }, [applyFilters, searchTerm, statusFilter])
 
   const getStatusColor = (status: string): BadgeVariant => {
     switch (status) {

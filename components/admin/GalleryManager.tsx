@@ -125,6 +125,8 @@ export function GalleryManager() {
           <div key={image.id} className="bg-[#2A2A25] border border-[#3A3A35] rounded-lg overflow-hidden">
             {/* Image Preview */}
             <div className="aspect-square bg-[#0A0A0A] overflow-hidden">
+              {/* Dynamic external URLs are user-managed; keep native img for unrestricted sources. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={image.src}
                 alt={`Gallery ${image.id}`}
