@@ -263,7 +263,32 @@ npm run build     # Compile production build
 npm start         # Serve the production build
 npm run seed      # Populate the database with demo data
 npm run lint      # Run ESLint across the codebase
+npx tsc --noEmit  # Run TypeScript typecheck
+npm run test      # Run unit and component tests
+npm run test:integration # Run integration tests (real DB test schema)
+npm run test:ci   # Run full local CI pipeline sequence
 ```
+
+## CI Pipeline
+
+This project ships with staged CI in [.github/workflows/ci.yml](.github/workflows/ci.yml):
+
+1. `quality` — lint + typecheck
+2. `unit_component` — Vitest unit/component tests
+3. `integration` — real DB integration tests (Postgres service)
+
+To simulate CI locally, use:
+
+```bash
+npm run test:ci
+```
+
+## Quality Gates & Stabilization
+
+- No-green-no-progress rule: each stage must pass before moving to next stage.
+- Integration tests use dedicated test schema (`booking_barber_test`) to avoid polluting development data.
+- Prisma advisory lock timeout (`P1002`) is handled by retry logic in `scripts/test-db/reset.cjs`.
+- If a flaky failure appears, rerun the same command first; if reproducible, fix root cause then rerun until green.
 
 ---
 

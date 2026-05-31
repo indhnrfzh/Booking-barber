@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Generated test artifacts
+    "coverage/**",
+    // Utility scripts intentionally written in CommonJS for cross-platform reliability
+    "scripts/test-db/**",
   ]),
 ]);
 
