@@ -41,6 +41,14 @@ function getSchemaSearchPath(rawUrl: string): string | undefined {
   }
 }
 
+function getPgSchema(rawUrl: string): string | undefined {
+  try {
+    return new URL(rawUrl).searchParams.get('schema') ?? undefined
+  } catch {
+    return undefined
+  }
+}
+
 const pool =
   globalForPrisma.pool ||
   new Pool({
@@ -51,7 +59,7 @@ const pool =
 export const prisma =
   globalForPrisma.prisma ||
   new PrismaClient({
-    adapter: new PrismaPg(pool),
+    adapter: new PrismaPg(pool, { schema: getPgSchema(normalizedDatabaseUrl) }),
     log: ['error', 'warn'],
   })
 

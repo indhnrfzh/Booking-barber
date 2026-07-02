@@ -65,10 +65,18 @@ const pool =
     options: getSchemaSearchPath(testDatabaseUrl),
   })
 
+function getPgSchema(rawUrl: string): string | undefined {
+  try {
+    return new URL(rawUrl).searchParams.get('schema') ?? undefined
+  } catch {
+    return undefined
+  }
+}
+
 export const integrationPrisma =
   prismaClientSingleton.integrationPrisma ||
   new PrismaClient({
-    adapter: new PrismaPg(pool),
+    adapter: new PrismaPg(pool, { schema: getPgSchema(testDatabaseUrl) }),
   })
 
 export const integrationPool = pool
