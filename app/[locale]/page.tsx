@@ -60,7 +60,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     ...service,
     imageUrl:
       service.imageUrl ??
-      'https://picsum.photos/seed/service-fallback/500/500',
+      '/Foto/bshop-1.jpg',
   }))
 
   // Build settings map and derive stats for AboutSection

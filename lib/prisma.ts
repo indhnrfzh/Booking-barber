@@ -42,7 +42,7 @@ export const prisma =
   globalForPrisma.prisma ||
   new PrismaClient({
     adapter: new PrismaPg(pool),
-    log: ['query'],
+    log: ['error', 'warn'],
   })
 
 if (process.env.NODE_ENV !== 'production') {

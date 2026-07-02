@@ -108,6 +108,37 @@ export function Footer() {
           </div>
         </div>
 
+        {/* Map */}
+        <div className="mb-12">
+          <h4 className="text-[#C9A84C] text-xs tracking-[0.2em] uppercase font-semibold mb-6">
+            {t('location')}
+          </h4>
+          <div className="relative w-full overflow-hidden rounded-lg border border-[#2A2A25]">
+            <iframe
+              title="Prestige Barbershop Location"
+              src="https://www.google.com/maps?q=-6.1097144,120.4658672&z=16&output=embed"
+              width="100%"
+              height="320"
+              style={{ border: 0 }}
+              loading="lazy"
+              allowFullScreen
+              referrerPolicy="no-referrer-when-downgrade"
+              className="w-full grayscale-[0.3] contrast-[1.05]"
+            />
+          </div>
+          <a
+            href="https://maps.app.goo.gl/StKXtNpqR2f93w3q8"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-4 inline-flex items-center gap-2 text-sm text-[#C9A84C] hover:text-[#E8C96A] transition-colors"
+          >
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z" />
+            </svg>
+            {t('viewOnMaps')}
+          </a>
+        </div>
+
         {/* Divider */}
         <div className="h-px bg-[#2A2A25] mb-8" />
 

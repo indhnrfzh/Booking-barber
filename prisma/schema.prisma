@@ -17,7 +17,7 @@ model Service {
   descEn      String    
   price       Int       // dalam Rupiah
   duration    Int       // dalam menit
-  imageUrl    String?   @default("https://picsum.photos/seed/service-default/500/500")
+  imageUrl    String?   @default("/Foto/bshop-1.jpg")
   isActive    Boolean   @default(true)
   order       Int       @default(0)
   bookings    Booking[]

@@ -65,6 +65,8 @@
     "phone": "+62 858-1234-5678",
     "email": "info@prestigebarbershop.id",
     "address": "Jl. Merdeka No. 123, Jakarta Selatan 12345",
+    "location": "Our Location",
+    "viewOnMaps": "View on Google Maps",
     "copyright": "© 2024 Prestige Barbershop. All rights reserved."
   },
   "booking": {

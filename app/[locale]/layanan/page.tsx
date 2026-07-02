@@ -43,7 +43,7 @@ export default function LayananPage() {
       descEn: 'Modern haircut with personal style consultation',
       price: 100000,
       duration: 45,
-      imageUrl: 'https://picsum.photos/seed/service-1/600/500',
+      imageUrl: '/Foto/bshop-1.jpg',
     },
     {
       id: '2',
@@ -53,7 +53,7 @@ export default function LayananPage() {
       descEn: 'Precision trimming for beard and mustache styling',
       price: 75000,
       duration: 30,
-      imageUrl: 'https://picsum.photos/seed/service-2/600/500',
+      imageUrl: '/Foto/bshop-2.jpg',
     },
     {
       id: '3',
@@ -63,7 +63,7 @@ export default function LayananPage() {
       descEn: 'Complete package with haircut, beard trim, and steam',
       price: 150000,
       duration: 75,
-      imageUrl: 'https://picsum.photos/seed/service-3/600/500',
+      imageUrl: '/Foto/bshop-3.jpg',
     },
   ]
 

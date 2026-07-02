@@ -1,0 +1,29 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Dark rounded background -->
+  <rect width="64" height="64" rx="14" fill="#0A0A0A"/>
+  <rect x="1" y="1" width="62" height="62" rx="13" stroke="#C9A84C" stroke-opacity="0.35" stroke-width="2"/>
+
+  <!-- Barber pole cap (top) -->
+  <rect x="22" y="9" width="20" height="6" rx="3" fill="#C9A84C"/>
+  <!-- Barber pole cap (bottom) -->
+  <rect x="22" y="49" width="20" height="6" rx="3" fill="#C9A84C"/>
+
+  <!-- Pole body with clipped diagonal stripes -->
+  <defs>
+    <clipPath id="poleClip">
+      <rect x="24" y="15" width="16" height="34" rx="8"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#poleClip)">
+    <rect x="24" y="15" width="16" height="34" fill="#F5F5F0"/>
+    <!-- Diagonal gold stripes -->
+    <g fill="#C9A84C">
+      <rect x="4" y="10" width="7" height="70" transform="rotate(35 32 32)"/>
+      <rect x="18" y="10" width="7" height="70" transform="rotate(35 32 32)"/>
+      <rect x="32" y="10" width="7" height="70" transform="rotate(35 32 32)"/>
+      <rect x="46" y="10" width="7" height="70" transform="rotate(35 32 32)"/>
+    </g>
+  </g>
+  <!-- Pole outline -->
+  <rect x="24" y="15" width="16" height="34" rx="8" stroke="#0A0A0A" stroke-width="1.5"/>
+</svg>

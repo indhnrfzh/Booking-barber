@@ -35,7 +35,7 @@ export function AboutSection({ stats: statsProp }: AboutSectionProps) {
           {/* Left: Image */}
           <div className="relative h-80 sm:h-96 lg:h-125 rounded-lg overflow-hidden">
             <Image
-              src="https://picsum.photos/seed/barber-about/600/700"
+              src="/Foto/barber-about.jpg"
               alt="Barbershop"
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"

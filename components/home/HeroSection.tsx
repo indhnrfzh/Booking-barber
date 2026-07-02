@@ -18,7 +18,7 @@ export function HeroSection() {
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{
-          backgroundImage: 'url(https://picsum.photos/seed/hero-cover/1200/800)',
+          backgroundImage: 'url(/Foto/hero-cover.jpg)',
         }}
       >
         {/* Dark Overlay Gradient */}
