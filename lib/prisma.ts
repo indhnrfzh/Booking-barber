@@ -32,10 +32,20 @@ function normalizeDatabaseUrl(rawUrl: string): string {
 
 const normalizedDatabaseUrl = normalizeDatabaseUrl(databaseUrl)
 
+function getSchemaSearchPath(rawUrl: string): string | undefined {
+  try {
+    const schema = new URL(rawUrl).searchParams.get('schema')
+    return schema ? `-c search_path=${schema}` : undefined
+  } catch {
+    return undefined
+  }
+}
+
 const pool =
   globalForPrisma.pool ||
   new Pool({
     connectionString: normalizedDatabaseUrl,
+    options: getSchemaSearchPath(normalizedDatabaseUrl),
   })
 
 export const prisma =

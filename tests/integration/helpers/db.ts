@@ -38,6 +38,15 @@ function normalizeDatabaseUrl(rawUrl: string) {
   }
 }
 
+function getSchemaSearchPath(rawUrl: string): string | undefined {
+  try {
+    const schema = new URL(rawUrl).searchParams.get('schema')
+    return schema ? `-c search_path=${schema}` : undefined
+  } catch {
+    return undefined
+  }
+}
+
 const testDatabaseUrl = getIntegrationDatabaseUrl()
 
 if (!testDatabaseUrl) {
@@ -53,6 +62,7 @@ const pool =
   prismaClientSingleton.integrationPool ||
   new Pool({
     connectionString: testDatabaseUrl,
+    options: getSchemaSearchPath(testDatabaseUrl),
   })
 
 export const integrationPrisma =

@@ -24,8 +24,18 @@ function normalizeDatabaseUrl(rawUrl: string): string {
   }
 }
 
+function getSchemaSearchPath(rawUrl: string): string | undefined {
+  try {
+    const schema = new URL(rawUrl).searchParams.get('schema')
+    return schema ? `-c search_path=${schema}` : undefined
+  } catch {
+    return undefined
+  }
+}
+
 const pool = new Pool({
   connectionString: normalizeDatabaseUrl(databaseUrl),
+  options: getSchemaSearchPath(databaseUrl),
 })
 
 const prisma = new PrismaClient({
