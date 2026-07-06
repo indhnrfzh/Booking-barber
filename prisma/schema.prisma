@@ -1,0 +1,106 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Service {
+  id          String    @id @default(cuid())
+  nameId      String    // Nama dalam bahasa Indonesia
+  nameEn      String    // Name in English
+  descId      String    
+  descEn      String    
+  price       Int       // dalam Rupiah
+  duration    Int       // dalam menit
+  imageUrl    String?   @default("/Foto/bshop-1.jpg")
+  isActive    Boolean   @default(true)
+  order       Int       @default(0)
+  bookings    Booking[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Schedule {
+  id        String  @id @default(cuid())
+  dayOfWeek Int     // 0=Minggu, 1=Senin, ..., 6=Sabtu
+  openTime  String  // "09:00"
+  closeTime String  // "21:00"
+  isOpen    Boolean @default(true)
+
+  @@unique([dayOfWeek])
+}
+
+model Booking {
+  id              String        @id @default(cuid())
+  bookingCode     String        @unique // REF-XXXX format
+  customerName    String
+  customerPhone   String
+  customerEmail   String
+  service         Service       @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  serviceId       String
+  bookingDate     DateTime      // tanggal booking (hanya date part yang penting)
+  timeSlot        String        // "10:00"
+  status          BookingStatus @default(PENDING)
+  notes           String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@index([serviceId])
+  @@index([bookingDate])
+  @@index([status])
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+model Admin {
+  id           String   @id @default(cuid())
+  username     String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+}
+
+model GalleryImage {
+  id        String   @id @default(cuid())
+  src       String
+  category  String
+  alt       String?
+  order     Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive])
+  @@index([order])
+}
+
+model Testimonial {
+  id        String   @id @default(cuid())
+  textId    String
+  textEn    String
+  author    String
+  rating    Int      @default(5)
+  order     Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive])
+  @@index([order])
+}
+
+model SiteSettings {
+  key       String   @id
+  valueId   String
+  valueEn   String
+  updatedAt DateTime @updatedAt
+}

@@ -1,0 +1,133 @@
+{
+  "nav": {
+    "home": "Home",
+    "services": "Services",
+    "gallery": "Gallery",
+    "booking": "Booking",
+    "bookNow": "Book Now"
+  },
+  "hero": {
+    "label": "ESTABLISHED · SINCE 2010",
+    "title": "Where Style\nMeets Precision",
+    "subtitle": "Premium cutting and grooming services for modern men",
+    "cta1": "Book Now",
+    "cta2": "View Services"
+  },
+  "about": {
+    "label": "ABOUT US",
+    "title": "The Art of Barbering, A Legacy of Tradition",
+    "description1": "Prestige Barbershop was established in 2010 with a vision to deliver world-class barbershop experience. Every cut is a work of art, every style is an expression of personality.",
+    "description2": "Our barbermen are trained in traditional European techniques combined with modern innovations, ensuring every client receives special attention and perfect results.",
+    "stat1": "500+ Clients",
+    "stat2": "10+ Years",
+    "stat3": "5★ Rating",
+    "cta": "Learn More →"
+  },
+  "services": {
+    "label": "OUR SERVICES",
+    "title": "Premium Services",
+    "subtitle": "Each service is designed with attention to detail and client satisfaction",
+    "viewAll": "View All Services →"
+  },
+  "gallery": {
+    "label": "GALLERY",
+    "title": "Our Craft",
+    "subtitle": "Inspiration from every cut and style we create",
+    "viewAll": "View Full Gallery →"
+  },
+  "testimonials": {
+    "label": "TESTIMONIALS",
+    "title": "What Our Clients Say",
+    "testimonial1": "Best experience ever! The barbers at Prestige are very professional and the cuts are perfect. I've become a regular customer.",
+    "testimonial1Author": "John Smith",
+    "testimonial2": "Relaxed yet premium atmosphere. I feel valued as a client here. Highly recommended for all men who care about their appearance.",
+    "testimonial2Author": "Michael Johnson",
+    "testimonial3": "Fast, neat, and professional service. Price matches quality. This is the right place for quality grooming.",
+    "testimonial3Author": "David Wilson"
+  },
+  "schedule": {
+    "label": "OPERATING HOURS",
+    "title": "When We're Open",
+    "open": "OPEN",
+    "closed": "CLOSED",
+    "cta": "Book Your Schedule"
+  },
+  "cta": {
+    "title": "Ready to Look Your Best?",
+    "subtitle": "Schedule your grooming session with Prestige Barbershop experts",
+    "button": "Book Now"
+  },
+  "footer": {
+    "about": "Prestige Barbershop is where style meets precision. We are committed to delivering world-class barbershop services.",
+    "nav": "Navigation",
+    "contact": "Contact",
+    "schedule": "Operating Hours",
+    "phone": "+62 858-1234-5678",
+    "email": "info@prestigebarbershop.id",
+    "address": "Jl. Merdeka No. 123, Jakarta Selatan 12345",
+    "location": "Our Location",
+    "viewOnMaps": "View on Google Maps",
+    "copyright": "© 2024 Prestige Barbershop. All rights reserved."
+  },
+  "booking": {
+    "title": "Book Your Appointment",
+    "step1": "Select Service",
+    "step2": "Select Date & Time",
+    "step3": "Your Details",
+    "step4": "Review",
+    "selectService": "Choose the service you want to book",
+    "selectDateTime": "Choose an available date and time",
+    "fullName": "Full Name",
+    "phone": "WhatsApp Number",
+    "email": "Email Address",
+    "notes": "Special Notes (optional)",
+    "confirm": "Confirm Booking",
+    "reviewing": "Sending booking...",
+    "confirmSuccess": "Booking Confirmed!",
+    "confirmMessage": "Your booking has been successfully saved.",
+    "bookingCode": "Booking Code",
+    "bookingCodeHelper": "Save this code for your reference",
+    "bookingDetails": "Booking Details",
+    "service": "Service",
+    "dateTime": "Date & Time",
+    "price": "Price",
+    "duration": "Duration",
+    "backHome": "Back to Home",
+    "bookAgain": "Book Again",
+    "loadingBooking": "Loading booking details...",
+    "bookingNotFound": "Booking details were not found. Please check your booking code.",
+    "confirmationSent": "Confirmation email has been sent to",
+    "emailDetails": "Confirmation email contains your booking details",
+    "contactUs": "Contact us if you need to make changes",
+    "arriveEarly": "Please arrive 5 minutes early",
+    "questions": "Questions?",
+    "phoneNumber": "+62 858-1234-5678",
+    "emailAddress": "info@prestigebarbershop.id"
+  },
+  "admin": {
+    "title": "Admin Dashboard",
+    "login": "Admin Login",
+    "username": "Username",
+    "password": "Password",
+    "signIn": "Sign In",
+    "logout": "Logout",
+    "dashboard": "Dashboard",
+    "bookings": "Bookings",
+    "services": "Services",
+    "schedule": "Schedule",
+    "totalBookings": "Total Bookings",
+    "pendingBookings": "Pending Bookings",
+    "todayBookings": "Today",
+    "revenue": "Estimated Revenue",
+    "status": "Status",
+    "action": "Action",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "complete": "Complete",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "save": "Save",
+    "cancel": "Cancel"
+  }
+}

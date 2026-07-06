@@ -1,0 +1,140 @@
+@import "tailwindcss";
+
+:root {
+  /* Prestige Barbershop Design Tokens */
+  /* Primary Dark Background */
+  --bg-primary: #0A0A0A;
+  --bg-surface: #141414;
+  --bg-elevated: #1C1C1C;
+  
+  /* Gold Accent Colors */
+  --gold: #C9A84C;
+  --gold-light: #E8C96A;
+  --gold-dim: #8B6E2A;
+  
+  /* Text Colors */
+  --text-primary: #F5F5F0;
+  --text-secondary: #A0A09A;
+  --text-muted: #5A5A55;
+  
+  /* Border & Divider */
+  --border: #2A2A25;
+  
+  /* Error */
+  --red-error: #E55353;
+  
+  /* Legacy vars untuk kompatibilitas */
+  --background: #0a0a0a;
+  --foreground: #F5F5F0;
+}
+
+@theme inline {
+  --color-primary: var(--bg-primary);
+  --color-surface: var(--bg-surface);
+  --color-elevated: var(--bg-elevated);
+  --color-gold: var(--gold);
+  --color-gold-light: var(--gold-light);
+  --color-gold-dim: var(--gold-dim);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-border: var(--border);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@layer base {
+  html {
+    @apply antialiased;
+  }
+
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button,
+  a,
+  [role='button'] {
+    touch-action: manipulation;
+  }
+
+  body {
+    @apply bg-[#0A0A0A] text-[#F5F5F0];
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Beautiful scrollbar */
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-[#141414];
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-[#C9A84C] rounded hover:bg-[#E8C96A];
+  }
+}
+
+@layer components {
+  /* Button Primary - Gold */
+  .btn-primary {
+    @apply px-6 py-3 bg-[#C9A84C] text-black font-semibold rounded-lg transition-all duration-200 hover:bg-[#E8C96A] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  /* Button Outline - Gold Border */
+  .btn-outline {
+    @apply px-6 py-3 border border-[#C9A84C] text-[#C9A84C] font-semibold rounded-lg transition-all duration-200 hover:bg-[#C9A84C] hover:text-black active:scale-95 disabled:opacity-50;
+  }
+
+  /* Button Ghost - Text Only */
+  .btn-ghost {
+    @apply px-4 py-2 text-[#C9A84C] font-medium transition-all duration-200 hover:text-[#E8C96A] disabled:opacity-50;
+  }
+
+  /* Gold Divider Line */
+  .gold-divider {
+    @apply w-24 h-px bg-[#C9A84C];
+  }
+
+  /* Section Label - Small uppercase gold */
+  .section-label {
+    @apply text-[#C9A84C] text-xs tracking-[0.2em] uppercase font-semibold;
+  }
+
+  /* Input Field */
+  .input-field {
+    @apply w-full px-4 py-3 bg-[#1C1C1C] border border-[#2A2A25] rounded-lg text-[#F5F5F0] placeholder-[#5A5A55] transition-all duration-200 focus:border-[#C9A84C] focus:ring-1 focus:ring-[#C9A84C] focus:outline-none;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  /* Badge */
+  .badge {
+    @apply inline-flex items-center px-3 py-1 bg-[#C9A84C]/10 text-[#C9A84C] border border-[#C9A84C]/20 rounded-full text-xs font-medium;
+  }
+
+  /* Container */
+  .container {
+    @apply max-w-7xl mx-auto px-6 lg:px-8;
+  }
+
+  /* Section Padding */
+  .section-py {
+    @apply py-16 lg:py-24;
+  }
+
+  /* Fade Up Animation */
+  .animate-fade-up {
+    @apply opacity-0 translate-y-8;
+  }
+}
+
+/* Tailwind dark mode fixes */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #F5F5F0;
+  }
+}

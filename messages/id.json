@@ -1,0 +1,133 @@
+{
+  "nav": {
+    "home": "Beranda",
+    "services": "Layanan",
+    "gallery": "Galeri",
+    "booking": "Booking",
+    "bookNow": "Booking Sekarang"
+  },
+  "hero": {
+    "label": "DIDIRIKAN · SEJAK 2010",
+    "title": "Di Mana Gaya\nBertemu Presisi",
+    "subtitle": "Layanan potong dan perawatan premium untuk pria modern",
+    "cta1": "Booking Sekarang",
+    "cta2": "Lihat Layanan"
+  },
+  "about": {
+    "label": "TENTANG KAMI",
+    "title": "Seni Mencukur, Warisan Tradisi",
+    "description1": "Prestige Barbershop berdiri sejak tahun 2010 dengan visi untuk memberikan pengalaman barbershop kelas dunia. Setiap potong adalah karya seni, setiap styling adalah ekspresi kepribadian.",
+    "description2": "Tim barberman kami terlatih dengan teknik tradisional Eropa dan inovasi modern, memastikan setiap klien mendapat perhatian khusus dan hasil yang sempurna.",
+    "stat1": "500+ Klien",
+    "stat2": "10+ Tahun",
+    "stat3": "5★ Rating",
+    "cta": "Selengkapnya →"
+  },
+  "services": {
+    "label": "LAYANAN KAMI",
+    "title": "Layanan Premium Kami",
+    "subtitle": "Setiap layanan dirancang dengan perhatian terhadap detail dan kepuasan klien",
+    "viewAll": "Lihat Semua Layanan →"
+  },
+  "gallery": {
+    "label": "GALERI",
+    "title": "Karya Tangan Kami",
+    "subtitle": "Inspirasi dari setiap potongan dan styling yang kami ciptakan",
+    "viewAll": "Lihat Galeri Lengkap →"
+  },
+  "testimonials": {
+    "label": "TESTIMONI",
+    "title": "Yang Dikatakan Klien Kami",
+    "testimonial1": "Pengalaman terbaik! Barberman di Prestige sangat profesional dan hasil potonannya sempurna. Saya jadi langganan tetap.",
+    "testimonial1Author": "Budi Santoso",
+    "testimonial2": "Atmosfer santai namun premium. Saya merasa dihargai sebagai klien di sini. Highly recommended untuk semua pria yang peduli penampilan.",
+    "testimonial2Author": "Rudi Hermawan",
+    "testimonial3": "Layanan cepat, rapi, dan profesional. Harga sesuai kualitas. Ini tempat yang tepat untuk grooming berkualitas.",
+    "testimonial3Author": "Ahmad Wijaya"
+  },
+  "schedule": {
+    "label": "JAM OPERASIONAL",
+    "title": "Kapan Kami Buka",
+    "open": "BUKA",
+    "closed": "TUTUP",
+    "cta": "Pesan Jadwal Anda"
+  },
+  "cta": {
+    "title": "Siap Tampil Percaya Diri?",
+    "subtitle": "Jadwalkan sesi grooming Anda bersama para ahli di Prestige Barbershop",
+    "button": "Booking Sekarang"
+  },
+  "footer": {
+    "about": "Prestige Barbershop adalah tempat di mana gaya bertemu dengan presisi. Kami berkomitmen memberikan layanan barbershop kelas dunia.",
+    "nav": "Navigasi",
+    "contact": "Kontak",
+    "schedule": "Jam Operasional",
+    "phone": "+62 858-1234-5678",
+    "email": "info@prestigebarbershop.id",
+    "address": "Jl. Merdeka No. 123, Jakarta Selatan 12345",
+    "location": "Lokasi Kami",
+    "viewOnMaps": "Lihat di Google Maps",
+    "copyright": "© 2024 Prestige Barbershop. Semua hak dilindungi."
+  },
+  "booking": {
+    "title": "Pesan Jadwal Anda",
+    "step1": "Pilih Layanan",
+    "step2": "Pilih Tanggal & Waktu",
+    "step3": "Data Diri",
+    "step4": "Review",
+    "selectService": "Pilih layanan yang ingin Anda pesan",
+    "selectDateTime": "Pilih tanggal dan waktu yang tersedia",
+    "fullName": "Nama Lengkap",
+    "phone": "Nomor WhatsApp",
+    "email": "Alamat Email",
+    "notes": "Catatan Khusus (opsional)",
+    "confirm": "Konfirmasi Booking",
+    "reviewing": "Mengirim booking...",
+    "confirmSuccess": "Booking Berhasil!",
+    "confirmMessage": "Booking Anda telah berhasil disimpan.",
+    "bookingCode": "Kode Booking",
+    "bookingCodeHelper": "Simpan kode ini untuk referensi Anda",
+    "bookingDetails": "Detail Booking",
+    "service": "Layanan",
+    "dateTime": "Tanggal & Waktu",
+    "price": "Harga",
+    "duration": "Durasi",
+    "backHome": "Kembali ke Beranda",
+    "bookAgain": "Booking Lagi",
+    "loadingBooking": "Memuat detail booking...",
+    "bookingNotFound": "Detail booking tidak ditemukan. Periksa kembali kode booking Anda.",
+    "confirmationSent": "Email konfirmasi telah dikirim ke",
+    "emailDetails": "Email konfirmasi berisi detail lengkap booking Anda",
+    "contactUs": "Hubungi kami jika ada perubahan",
+    "arriveEarly": "Hadir 5 menit sebelum jadwal",
+    "questions": "Pertanyaan?",
+    "phoneNumber": "+62 858-1234-5678",
+    "emailAddress": "info@prestigebarbershop.id"
+  },
+  "admin": {
+    "title": "Admin Dashboard",
+    "login": "Login Admin",
+    "username": "Username",
+    "password": "Password",
+    "signIn": "Masuk",
+    "logout": "Logout",
+    "dashboard": "Dashboard",
+    "bookings": "Booking",
+    "services": "Layanan",
+    "schedule": "Jadwal",
+    "totalBookings": "Total Booking",
+    "pendingBookings": "Booking Pending",
+    "todayBookings": "Hari Ini",
+    "revenue": "Estimasi Pendapatan",
+    "status": "Status",
+    "action": "Aksi",
+    "confirm": "Konfirmasi",
+    "cancel": "Batal",
+    "complete": "Selesai",
+    "delete": "Hapus",
+    "edit": "Edit",
+    "add": "Tambah",
+    "save": "Simpan",
+    "cancel": "Batal"
+  }
+}
