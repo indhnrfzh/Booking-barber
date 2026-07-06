@@ -1,11 +1,12 @@
 import prismaPkg from '@prisma/client'
+import type { PrismaClient as PrismaClientType } from '@prisma/client'
 import { PrismaPg } from '@prisma/adapter-pg'
 import { Pool } from 'pg'
 
 const { PrismaClient } = prismaPkg
 
 const globalForPrisma = global as unknown as {
-  prisma?: PrismaClient
+  prisma?: PrismaClientType
   pool?: Pool
 }
 

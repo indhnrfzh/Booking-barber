@@ -9,7 +9,7 @@ export default async function AdminDashboardPage() {
 
   // Fetch bookings with service data
   type BookingWithService = Booking & {
-    service?: { nameId: string; nameEn: string; price: number } | null
+    service: { nameId: string; nameEn: string; price: number }
   }
 
   const bookings: BookingWithService[] = await prisma.booking.findMany({

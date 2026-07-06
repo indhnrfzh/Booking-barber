@@ -1,6 +1,7 @@
 import { config as loadDotenv } from 'dotenv'
 
 import prismaPkg from '@prisma/client'
+import type { PrismaClient as PrismaClientType } from '@prisma/client'
 import { PrismaPg } from '@prisma/adapter-pg'
 import { Pool } from 'pg'
 
@@ -56,7 +57,7 @@ if (!testDatabaseUrl) {
 }
 
 const prismaClientSingleton = globalThis as unknown as {
-  integrationPrisma?: PrismaClient
+  integrationPrisma?: PrismaClientType
   integrationPool?: Pool
 }
 

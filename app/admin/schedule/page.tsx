@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma'
+import type { Schedule } from '@prisma/client'
 import { ScheduleManager } from '@/components/admin/ScheduleManager'
 import { AdminNavbar } from '@/components/admin/Navbar'
 import { getAdminUser } from '@/lib/admin-auth'
@@ -6,13 +7,15 @@ import { getAdminUser } from '@/lib/admin-auth'
 export default async function AdminSchedulePage() {
   const admin = await getAdminUser()
 
-  const schedules = await prisma.schedule.findMany({
+  const schedules: Schedule[] = await prisma.schedule.findMany({
     orderBy: { dayOfWeek: 'asc' },
   })
 
   const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
-  const schedulesWithDayNames = schedules.map((schedule) => ({
+  type ScheduleWithDayName = Schedule & { dayName: string }
+
+  const schedulesWithDayNames: ScheduleWithDayName[] = schedules.map((schedule) => ({
     ...schedule,
     dayName: DAYS[schedule.dayOfWeek],
   }))
