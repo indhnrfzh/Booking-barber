@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma'
+import type { Booking } from '@prisma/client'
 import { BookingsTable } from '@/components/admin/BookingsTable'
 import { AdminNavbar } from '@/components/admin/Navbar'
 import { getAdminUser } from '@/lib/admin-auth'
@@ -7,7 +8,11 @@ export default async function AdminDashboardPage() {
   const admin = await getAdminUser()
 
   // Fetch bookings with service data
-  const bookings = await prisma.booking.findMany({
+  type BookingWithService = Booking & {
+    service?: { nameId: string; nameEn: string; price: number } | null
+  }
+
+  const bookings: BookingWithService[] = await prisma.booking.findMany({
     include: {
       service: {
         select: {
