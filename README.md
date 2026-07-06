@@ -107,7 +107,7 @@ Booking Barber gives barbershop owners a streamlined platform to manage appointm
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/ilham1421/booking_barber.git
+git clone https://github.com/indhnrfzh/Booking-barber.git
 cd booking_barber
 ```
 
@@ -392,8 +392,8 @@ Please follow the existing code style, keep commits atomic, and update relevant 
 
 <div align="center">
 
-Made with care by [ilham1421](https://github.com/ilham1421)
+Made with care by [indhnrfzh](https://github.com/indhnrfzh)
 
-[⭐ Star this repo](https://github.com/ilham1421/booking_barber) · [🐛 Report a bug](https://github.com/ilham1421/booking_barber/issues) · [💬 Discussions](https://github.com/ilham1421/booking_barber/discussions)
+[⭐ Star this repo](https://github.com/indhnrfzh/Booking-barber) · [🐛 Report a bug](https://github.com/indhnrfzh/Booking-barber/issues) · [💬 Discussions](https://github.com/indhnrfzh/Booking-barber/discussions)
 
 </div>
