@@ -27,6 +27,10 @@ interface FormData {
   customerPhone: string
   customerEmail: string
   notes: string
+  joinMember: boolean
+  waOptIn: boolean
+  memberCode: string
+  voucherCode: string
 }
 
 export default function BookingPage() {
@@ -40,6 +44,7 @@ export default function BookingPage() {
   const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([])
   const [isLoadingServices, setIsLoadingServices] = useState(false)
   const [isLoadingSlots, setIsLoadingSlots] = useState(false)
+  const [hasMemberCode, setHasMemberCode] = useState(false)
   const [formData, setFormData] = useState<FormData>({
     serviceId: '',
     bookingDate: '',
@@ -48,6 +53,10 @@ export default function BookingPage() {
     customerPhone: '',
     customerEmail: '',
     notes: '',
+    joinMember: false,
+    waOptIn: false,
+    memberCode: '',
+    voucherCode: '',
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -338,7 +347,7 @@ export default function BookingPage() {
                 name="customerPhone"
                 value={formData.customerPhone}
                 onChange={handleInputChange}
-                placeholder={locale === 'id' ? '+62' : '+62'}
+                placeholder={locale === 'id' ? '081234567890' : '081234567890'}
                 error={errors.customerPhone}
                 containerClassName="space-y-2"
               />
@@ -361,9 +370,85 @@ export default function BookingPage() {
                   value={formData.notes}
                   onChange={handleInputChange}
                   placeholder={locale === 'id' ? 'Catatan khusus...' : 'Special notes...'}
-                  rows={3}
-                  className="input-field resize-y min-h-24"
+                  rows={2}
+                  className="input-field resize-y min-h-20"
                 />
+              </div>
+
+              {/* Loyalty & Member Block */}
+              <div className="bg-[#141414] border border-[#2A2A25] rounded-lg p-5 space-y-4">
+                <h3 className="text-base font-semibold text-[#C9A84C] flex items-center gap-2">
+                  <span>👑</span> {t('memberSection')}
+                </h3>
+
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-[#A0A09A]">{t('haveMemberCode')}</span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const next = !hasMemberCode
+                        setHasMemberCode(next)
+                        if (!next) {
+                          setFormData((prev) => ({ ...prev, memberCode: '' }))
+                        }
+                      }}
+                      className="text-[#C9A84C] hover:text-[#E8C96A] text-xs underline font-medium"
+                    >
+                      {hasMemberCode
+                        ? (locale === 'id' ? 'Daftar Baru / Belum Punya' : 'Register New / None')
+                        : (locale === 'id' ? 'Masukkan Kode' : 'Enter Code')}
+                    </button>
+                  </div>
+
+                  {hasMemberCode ? (
+                    <div>
+                      <Input
+                        name="memberCode"
+                        value={formData.memberCode}
+                        onChange={(e) =>
+                          setFormData({ ...formData, memberCode: e.target.value.toUpperCase() })
+                        }
+                        placeholder={t('memberCodeInput')}
+                        containerClassName="space-y-1"
+                      />
+                    </div>
+                  ) : (
+                    <label className="flex items-start gap-3 cursor-pointer text-[#F5F5F0] text-sm">
+                      <input
+                        type="checkbox"
+                        checked={formData.joinMember}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            joinMember: e.target.checked,
+                            waOptIn: e.target.checked ? formData.waOptIn : false,
+                          })
+                        }
+                        className="w-4 h-4 mt-0.5 accent-[#C9A84C]"
+                      />
+                      <span className="text-[#F5F5F0]">
+                        {t('joinMemberCheckbox')}
+                      </span>
+                    </label>
+                  )}
+
+                  {(hasMemberCode || formData.joinMember) && (
+                    <label className="flex items-start gap-3 cursor-pointer text-[#F5F5F0] text-sm pt-2 border-t border-[#2A2A25]">
+                      <input
+                        type="checkbox"
+                        checked={formData.waOptIn}
+                        onChange={(e) =>
+                          setFormData({ ...formData, waOptIn: e.target.checked })
+                        }
+                        className="w-4 h-4 mt-0.5 accent-[#C9A84C]"
+                      />
+                      <span className="text-[#A0A09A]">
+                        📱 {t('waReminderCheckbox')}
+                      </span>
+                    </label>
+                  )}
+                </div>
               </div>
             </div>
           )}
@@ -396,13 +481,38 @@ export default function BookingPage() {
                   <p className="text-2xl font-bold text-[#C9A84C]">{formatPrice(selectedService.price, locale)}</p>
                 </div>
 
-                <div className="border-t border-[#2A2A25] pt-4">
+                <div className="border-t border-[#2A2A25] pt-4 space-y-1">
                   <p className="text-[#A0A09A] text-sm">{t('bookingDetails')}</p>
                   <p className="text-[#F5F5F0]">{formData.customerName}</p>
                   <p className="text-[#F5F5F0]">{formData.customerPhone}</p>
                   <p className="text-[#F5F5F0]">{formData.customerEmail}</p>
+                  {formData.memberCode && (
+                    <p className="text-[#C9A84C] text-sm font-mono">Member: {formData.memberCode}</p>
+                  )}
                   {formData.notes && <p className="text-[#A0A09A] mt-2 italic">{formData.notes}</p>}
                 </div>
+              </div>
+
+              {/* Voucher Code Input */}
+              <div className="bg-[#141414] border border-[#2A2A25] rounded-lg p-5 space-y-3">
+                <label className="block text-sm font-medium text-[#F5F5F0]">
+                  🏷️ {t('voucherSection')} ({locale === 'id' ? 'Opsional' : 'Optional'})
+                </label>
+                <input
+                  type="text"
+                  name="voucherCode"
+                  value={formData.voucherCode}
+                  onChange={(e) =>
+                    setFormData({ ...formData, voucherCode: e.target.value.toUpperCase() })
+                  }
+                  placeholder={t('voucherCodeInput')}
+                  className="input-field uppercase font-mono tracking-wider"
+                />
+                <p className="text-xs text-[#5A5A55]">
+                  {locale === 'id'
+                    ? 'Voucher diskon khusus member. Masukkan kode voucher aktif Anda.'
+                    : 'Exclusive member voucher. Enter your active voucher code.'}
+                </p>
               </div>
 
               <label className="flex items-center gap-3 text-[#F5F5F0]">

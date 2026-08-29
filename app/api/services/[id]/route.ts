@@ -1,20 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { jwtVerify } from 'jose'
-
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || 'your-secret-key-change-in-production'
-)
+import { AdminAuthError, assertAdminToken } from '@/lib/auth'
 
 async function verifyAdminToken(request: NextRequest) {
-  const token = request.cookies.get('admin_token')?.value
-  if (!token) {
-    throw new Error('No token')
-  }
-  const verified = await jwtVerify(token, JWT_SECRET)
-  if (verified.payload.role !== 'admin') {
-    throw new Error('Not admin')
-  }
+  await assertAdminToken(request.cookies.get('admin_token')?.value)
 }
 
 export async function PUT(
@@ -46,6 +35,10 @@ export async function PUT(
 
     return NextResponse.json(service)
   } catch (error: unknown) {
+    if (error instanceof AdminAuthError) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     if (error && typeof error === 'object' && 'code' in error && error.code === 'P2025') {
       return NextResponse.json(
         { error: 'Service not found' },
@@ -53,11 +46,10 @@ export async function PUT(
       )
     }
 
-    const message = error instanceof Error ? error.message : 'Failed to update service'
-
+    console.error('Error updating service:', error)
     return NextResponse.json(
-      { error: message },
-      { status: message === 'No token' ? 401 : 500 }
+      { error: 'Failed to update service' },
+      { status: 500 }
     )
   }
 }
@@ -77,6 +69,10 @@ export async function DELETE(
 
     return NextResponse.json({ success: true })
   } catch (error: unknown) {
+    if (error instanceof AdminAuthError) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     if (error && typeof error === 'object' && 'code' in error && error.code === 'P2025') {
       return NextResponse.json(
         { error: 'Service not found' },
@@ -84,11 +80,10 @@ export async function DELETE(
       )
     }
 
-    const message = error instanceof Error ? error.message : 'Failed to delete service'
-
+    console.error('Error deleting service:', error)
     return NextResponse.json(
-      { error: message },
-      { status: message === 'No token' ? 401 : 500 }
+      { error: 'Failed to delete service' },
+      { status: 500 }
     )
   }
 }

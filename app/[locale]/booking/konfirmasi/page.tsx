@@ -18,6 +18,14 @@ interface BookingDetail {
     duration: number
     price: number
   }
+  member?: {
+    memberCode: string
+  } | null
+  voucher?: {
+    code: string
+    discountType: 'PERCENT' | 'FIXED'
+    discountValue: number
+  } | null
 }
 
 export default function KonfirmasiPage() {
@@ -116,6 +124,29 @@ export default function KonfirmasiPage() {
             </div>
           )}
 
+          {/* Member Digital Card */}
+          {!isLoading && booking?.member?.memberCode && (
+            <div className="bg-[#1C1C1C] border border-[#C9A84C] rounded-lg p-6 space-y-2 text-left">
+              <div className="flex items-center justify-between">
+                <p className="text-[#C9A84C] font-semibold text-sm flex items-center gap-1.5">
+                  <span>👑</span> {t('memberCodeSuccess')}
+                </p>
+                <Link
+                  href={`/${locale}/member`}
+                  className="text-xs text-[#C9A84C] hover:text-[#E8C96A] underline"
+                >
+                  {locale === 'id' ? 'Buka Portal Member →' : 'Open Member Portal →'}
+                </Link>
+              </div>
+              <p className="font-mono text-2xl font-bold text-[#F5F5F0] tracking-widest">
+                {booking.member.memberCode}
+              </p>
+              <p className="text-xs text-[#A0A09A]">
+                {t('memberCodeSuccessDesc')}
+              </p>
+            </div>
+          )}
+
           {isLoading && (
             <div className="bg-[#1C1C1C] border border-[#2A2A25] rounded-lg p-6 text-[#A0A09A]">
               {t('loadingBooking')}
@@ -144,6 +175,16 @@ export default function KonfirmasiPage() {
                 <p className="text-[#A0A09A]">
                   {t('price')}: <span className="text-[#C9A84C] font-semibold">{formattedPrice}</span>
                 </p>
+                {booking.voucher && (
+                  <p className="text-green-400 text-sm">
+                    🎟️ {t('voucherDiscount')}:{' '}
+                    <span className="font-semibold font-mono">
+                      {booking.voucher.discountType === 'PERCENT'
+                        ? `${booking.voucher.discountValue}% (${booking.voucher.code})`
+                        : `Rp ${booking.voucher.discountValue.toLocaleString('id-ID')} (${booking.voucher.code})`}
+                    </span>
+                  </p>
+                )}
               </div>
             </div>
           )}
@@ -180,7 +221,7 @@ export default function KonfirmasiPage() {
           <div className="text-center text-[#5A5A55] text-sm space-y-2 pt-8 border-t border-[#2A2A25]">
             <p>{t('questions')}</p>
             <div className="flex justify-center gap-4">
-              <a href="tel:+6285812345678" className="text-[#C9A84C] hover:text-[#E8C96A]">
+              <a href="tel:+6285751864219" className="text-[#C9A84C] hover:text-[#E8C96A]">
                 {t('phoneNumber')}
               </a>
               <span>•</span>

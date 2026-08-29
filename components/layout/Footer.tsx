@@ -4,20 +4,68 @@ import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { getDayName } from '@/lib/utils'
 
 type SettingsMap = Record<string, { valueId: string; valueEn: string }>
+
+interface ScheduleItem {
+  dayOfWeek: number
+  openTime: string
+  closeTime: string
+  isOpen: boolean
+}
+
+// Display order: Monday..Saturday, then Sunday
+const DAY_DISPLAY_ORDER = [1, 2, 3, 4, 5, 6, 0]
+
+function groupSchedules(schedules: ScheduleItem[]) {
+  const ordered = DAY_DISPLAY_ORDER.map((day) =>
+    schedules.find((s) => s.dayOfWeek === day)
+  ).filter((s): s is ScheduleItem => Boolean(s))
+
+  const groups: { days: number[]; openTime: string; closeTime: string; isOpen: boolean }[] = []
+
+  for (const item of ordered) {
+    const last = groups[groups.length - 1]
+    if (
+      last &&
+      last.openTime === item.openTime &&
+      last.closeTime === item.closeTime &&
+      last.isOpen === item.isOpen
+    ) {
+      last.days.push(item.dayOfWeek)
+    } else {
+      groups.push({
+        days: [item.dayOfWeek],
+        openTime: item.openTime,
+        closeTime: item.closeTime,
+        isOpen: item.isOpen,
+      })
+    }
+  }
+
+  return groups
+}
 
 export function Footer() {
   const t = useTranslations('footer')
   const pathname = usePathname()
   const locale = pathname.split('/')[1] || 'id'
   const [settings, setSettings] = useState<SettingsMap | null>(null)
+  const [schedules, setSchedules] = useState<ScheduleItem[] | null>(null)
 
   useEffect(() => {
     fetch('/api/settings')
       .then((res) => res.json())
       .then((data: { settings: SettingsMap }) => setSettings(data.settings))
       .catch(() => setSettings(null))
+
+    fetch('/api/schedule')
+      .then((res) => res.json())
+      .then((data: { schedules?: ScheduleItem[] }) =>
+        setSchedules(Array.isArray(data.schedules) ? data.schedules : null)
+      )
+      .catch(() => setSchedules(null))
   }, [])
 
   function getSetting(key: string, fallback: string): string {
@@ -32,6 +80,8 @@ export function Footer() {
   const address = getSetting('address', t('address'))
   const footerAbout = getSetting('footer_about', t('about'))
   const copyright = getSetting('footer_copyright', t('copyright'))
+
+  const scheduleGroups = schedules && schedules.length > 0 ? groupSchedules(schedules) : null
 
   return (
     <footer className="bg-[#141414] border-t border-[#2A2A25]">
@@ -68,6 +118,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href={`/${locale}/member`} className="text-[#A0A09A] hover:text-[#C9A84C] transition-colors text-sm">
+                  Member
+                </Link>
+              </li>
+              <li>
                 <Link href={`/${locale}/booking`} className="text-[#A0A09A] hover:text-[#C9A84C] transition-colors text-sm">
                   Booking
                 </Link>
@@ -81,9 +136,31 @@ export function Footer() {
               {t('schedule')}
             </h4>
             <ul className="flex flex-col gap-2 text-sm text-[#A0A09A]">
-              <li>Senin - Jumat: 09:00 - 21:00</li>
-              <li>Sabtu: 10:00 - 22:00</li>
-              <li>Minggu: 11:00 - 20:00</li>
+              {scheduleGroups ? (
+                scheduleGroups.map((group) => {
+                  const label =
+                    group.days.length > 1
+                      ? `${getDayName(group.days[0], locale)} - ${getDayName(group.days[group.days.length - 1], locale)}`
+                      : getDayName(group.days[0], locale)
+                  const value = group.isOpen
+                    ? `${group.openTime} - ${group.closeTime}`
+                    : locale === 'id'
+                      ? 'Tutup'
+                      : 'Closed'
+
+                  return (
+                    <li key={label}>
+                      {label}: {value}
+                    </li>
+                  )
+                })
+              ) : (
+                <>
+                  <li>Senin - Jumat: 09:00 - 21:00</li>
+                  <li>Sabtu: 10:00 - 22:00</li>
+                  <li>Minggu: 11:00 - 20:00</li>
+                </>
+              )}
             </ul>
           </div>
 

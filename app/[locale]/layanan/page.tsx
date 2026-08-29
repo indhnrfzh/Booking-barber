@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
@@ -16,56 +16,37 @@ interface Service {
   descEn: string
   price: number
   duration: number
-  imageUrl: string
+  imageUrl: string | null
 }
+
+const FALLBACK_IMAGE = '/Foto/bshop-1.jpg'
 
 export default function LayananPage() {
   const t = useTranslations('services')
   const tBooking = useTranslations('booking')
-  const [selectedCategory, setSelectedCategory] = useState('all')
   const pathname = usePathname()
   const locale = pathname.split('/')[1] || 'id'
 
-  const categories = [
-    { id: 'all', label: t('label') === 'LAYANAN KAMI' ? 'Semua' : 'All' },
-    { id: 'cutting', label: locale === 'id' ? 'Potong Rambut' : 'Haircut' },
-    { id: 'grooming', label: locale === 'id' ? 'Grooming' : 'Grooming' },
-    { id: 'treatment', label: locale === 'id' ? 'Perawatan' : 'Treatment' },
-  ]
+  const [services, setServices] = useState<Service[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
-  // Dummy services untuk demo (akan diganti dengan data dari DB di server component)
-  const services: Service[] = [
-    {
-      id: '1',
-      nameId: 'Potong Rambut Premium',
-      nameEn: 'Premium Haircut',
-      descId: 'Potong rambut dengan teknik modern dan konsultasi gaya pribadi',
-      descEn: 'Modern haircut with personal style consultation',
-      price: 100000,
-      duration: 45,
-      imageUrl: '/Foto/bshop-1.jpg',
-    },
-    {
-      id: '2',
-      nameId: 'Pencukuran Kumis & Jenggot',
-      nameEn: 'Beard & Mustache Trim',
-      descId: 'Pencukuran presisi untuk kumis, jenggot, dan styling',
-      descEn: 'Precision trimming for beard and mustache styling',
-      price: 75000,
-      duration: 30,
-      imageUrl: '/Foto/bshop-2.jpg',
-    },
-    {
-      id: '3',
-      nameId: 'Paket Lengkap (Potong + Cukur)',
-      nameEn: 'Full Grooming Package',
-      descId: 'Paket lengkap potong rambut + pencukuran kumis & jenggot + steam',
-      descEn: 'Complete package with haircut, beard trim, and steam',
-      price: 150000,
-      duration: 75,
-      imageUrl: '/Foto/bshop-3.jpg',
-    },
-  ]
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const response = await fetch('/api/services')
+        if (response.ok) {
+          const data = await response.json()
+          setServices(data.services)
+        }
+      } catch (error) {
+        console.error('Error fetching services:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchServices()
+  }, [])
 
   const serviceName = locale === 'id' ? 'nameId' : 'nameEn'
   const serviceDesc = locale === 'id' ? 'descId' : 'descEn'
@@ -87,24 +68,16 @@ export default function LayananPage() {
       {/* Services Grid*/}
       <section className="section-py">
         <div className="container">
-          {/* Category Filter */}
-          <div className="flex flex-wrap justify-center gap-3 mb-16">
-            {categories.map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => setSelectedCategory(cat.id)}
-                className={`min-h-11 px-6 py-2 rounded-full transition-all touch-manipulation ${
-                  selectedCategory === cat.id
-                    ? 'bg-[#C9A84C] text-black font-semibold'
-                    : 'border border-[#C9A84C] text-[#C9A84C] hover:bg-[#C9A84C]/10'
-                }`}
-              >
-                {cat.label}
-              </button>
-            ))}
-          </div>
-
           {/* Services Grid */}
+          {isLoading ? (
+            <div className="rounded-lg border border-[#2A2A25] bg-[#141414] p-6 text-center text-[#808078]">
+              {locale === 'id' ? 'Memuat layanan...' : 'Loading services...'}
+            </div>
+          ) : services.length === 0 ? (
+            <div className="rounded-lg border border-[#2A2A25] bg-[#141414] p-6 text-center text-[#808078]">
+              {locale === 'id' ? 'Belum ada layanan tersedia.' : 'No services available yet.'}
+            </div>
+          ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
             {services.map((service) => (
               <div
@@ -114,7 +87,7 @@ export default function LayananPage() {
                 {/* Image */}
                 <div className="relative h-52 sm:h-64 overflow-hidden bg-[#1C1C1C]">
                   <Image
-                    src={service.imageUrl}
+                    src={service.imageUrl || FALLBACK_IMAGE}
                     alt={service[serviceName]}
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -150,6 +123,7 @@ export default function LayananPage() {
               </div>
             ))}
           </div>
+          )}
         </div>
       </section>
     </>

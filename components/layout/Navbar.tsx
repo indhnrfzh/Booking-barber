@@ -27,6 +27,7 @@ export function Navbar() {
     { label: t('home'), href: `/${locale}` },
     { label: t('services'), href: `/${locale}/layanan` },
     { label: t('gallery'), href: `/${locale}/galeri` },
+    { label: t('member'), href: `/${locale}/member` },
   ]
 
   return (

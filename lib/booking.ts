@@ -6,7 +6,7 @@ const SLOT_INTERVAL_MINUTES = 30
 type AvailabilityReason = 'service_not_found' | 'closed' | 'ok'
 
 type AvailabilityResult = {
-  service: { id: string; duration: number } | null
+  service: { id: string; duration: number; price: number } | null
   schedule: { openTime: string; closeTime: string; isOpen: boolean } | null
   slots: string[]
   dateRange: {

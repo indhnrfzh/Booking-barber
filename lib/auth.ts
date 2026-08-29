@@ -26,6 +26,25 @@ export async function verifyToken(token: string) {
   }
 }
 
+export class AdminAuthError extends Error {}
+
+/**
+ * Verifies an admin JWT taken from the `admin_token` cookie.
+ * Throws AdminAuthError when the token is missing, invalid, or not an admin.
+ */
+export async function assertAdminToken(token: string | undefined): Promise<JWTPayload> {
+  if (!token) {
+    throw new AdminAuthError('No token')
+  }
+
+  const payload = await verifyToken(token)
+  if (!payload || payload.role !== 'admin') {
+    throw new AdminAuthError('Not admin')
+  }
+
+  return payload
+}
+
 export async function hashPassword(password: string) {
   const salt = await bcryptjs.genSalt(10)
   return bcryptjs.hash(password, salt)

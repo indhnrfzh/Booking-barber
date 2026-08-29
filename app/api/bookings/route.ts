@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { generateBookingCode } from '@/lib/utils'
 import { getAvailableSlotsForDate } from '@/lib/booking'
 import { sendBookingConfirmation } from '@/lib/email'
+import { resolveMemberForBooking } from '@/lib/member-server'
 
 async function generateUniqueBookingCode(): Promise<string> {
   for (let i = 0; i < 8; i += 1) {
@@ -21,8 +22,19 @@ async function generateUniqueBookingCode(): Promise<string> {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { serviceId, bookingDate, timeSlot, customerName, customerPhone, customerEmail, notes } =
-      body
+    const {
+      serviceId,
+      bookingDate,
+      timeSlot,
+      customerName,
+      customerPhone,
+      customerEmail,
+      notes,
+      joinMember,
+      waOptIn,
+      memberCode,
+      voucherCode,
+    } = body
 
     // Validation
     if (!serviceId || !bookingDate || !timeSlot || !customerName || !customerPhone || !customerEmail) {
@@ -79,6 +91,92 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Resolve member if memberCode or joinMember provided
+    const memberResult = await resolveMemberForBooking({
+      memberCode,
+      joinMember: Boolean(joinMember),
+      waOptIn: Boolean(waOptIn),
+      name: customerName,
+      phone: customerPhone,
+      email: customerEmail,
+    })
+
+    if (memberResult.error) {
+      return NextResponse.json(
+        { error: memberResult.error },
+        { status: 404 }
+      )
+    }
+
+    const member = memberResult.member
+
+    // Validate voucher if voucherCode is provided
+    let attachedVoucher: {
+      id: string
+      code: string
+      discountType: 'PERCENT' | 'FIXED'
+      discountValue: number
+    } | null = null
+    let discountAmount = 0
+    let discountText = ''
+
+    if (voucherCode && typeof voucherCode === 'string' && voucherCode.trim()) {
+      if (!member) {
+        return NextResponse.json(
+          { error: 'Voucher can only be used by members' },
+          { status: 400 }
+        )
+      }
+
+      const cleanVoucherCode = voucherCode.toUpperCase().trim()
+      const foundVoucher = await prisma.voucher.findUnique({
+        where: { code: cleanVoucherCode },
+      })
+
+      if (
+        !foundVoucher ||
+        foundVoucher.memberId !== member.id ||
+        foundVoucher.status !== 'ACTIVE' ||
+        foundVoucher.expiresAt < new Date()
+      ) {
+        return NextResponse.json(
+          { error: 'Voucher is invalid or has expired' },
+          { status: 400 }
+        )
+      }
+
+      // Check if voucher is already assigned to an active booking
+      const existingBookingWithVoucher = await prisma.booking.findUnique({
+        where: { voucherId: foundVoucher.id },
+        select: { id: true, status: true },
+      })
+
+      if (
+        existingBookingWithVoucher &&
+        existingBookingWithVoucher.status !== 'CANCELLED'
+      ) {
+        return NextResponse.json(
+          { error: 'Voucher is already used on another booking' },
+          { status: 409 }
+        )
+      }
+
+      attachedVoucher = {
+        id: foundVoucher.id,
+        code: foundVoucher.code,
+        discountType: foundVoucher.discountType,
+        discountValue: foundVoucher.discountValue,
+      }
+
+      if (foundVoucher.discountType === 'PERCENT') {
+        discountAmount = Math.round((availability.service.price * foundVoucher.discountValue) / 100)
+        discountText = `${foundVoucher.discountValue}%`
+      } else {
+        discountAmount = Math.min(availability.service.price, foundVoucher.discountValue)
+        discountText = `Rp ${foundVoucher.discountValue.toLocaleString('id-ID')}`
+      }
+    }
+
     const bookingCode = await generateUniqueBookingCode()
 
     const booking = await prisma.booking.create({
@@ -88,6 +186,8 @@ export async function POST(request: NextRequest) {
         customerPhone,
         customerEmail,
         serviceId,
+        memberId: member ? member.id : null,
+        voucherId: attachedVoucher ? attachedVoucher.id : null,
         bookingDate: availability.dateRange.start,
         timeSlot,
         status: 'PENDING',
@@ -95,8 +195,22 @@ export async function POST(request: NextRequest) {
       },
       include: {
         service: true,
+        member: {
+          select: {
+            memberCode: true,
+          },
+        },
+        voucher: {
+          select: {
+            code: true,
+            discountType: true,
+            discountValue: true,
+          },
+        },
       },
     })
+
+    const finalPrice = Math.max(0, booking.service.price - discountAmount)
 
     let emailSent = false
     if (process.env.RESEND_API_KEY) {
@@ -108,6 +222,9 @@ export async function POST(request: NextRequest) {
         timeSlot: booking.timeSlot,
         bookingCode: booking.bookingCode,
         price: booking.service.price,
+        memberCode: member?.memberCode,
+        discountText: discountText || undefined,
+        finalPrice,
       })
       emailSent = Boolean(emailResult.success)
     }
@@ -117,6 +234,16 @@ export async function POST(request: NextRequest) {
         success: true,
         emailSent,
         bookingCode: booking.bookingCode,
+        memberCode: member?.memberCode || null,
+        discount: attachedVoucher
+          ? {
+              code: attachedVoucher.code,
+              type: attachedVoucher.discountType,
+              value: attachedVoucher.discountValue,
+              amount: discountAmount,
+              finalPrice,
+            }
+          : null,
         booking: {
           id: booking.id,
           bookingCode: booking.bookingCode,
@@ -125,6 +252,7 @@ export async function POST(request: NextRequest) {
           bookingDate: booking.bookingDate,
           timeSlot: booking.timeSlot,
           serviceName: booking.service.nameEn,
+          memberCode: member?.memberCode || null,
         },
       },
       { status: 201 }
@@ -154,6 +282,21 @@ export async function GET(request: NextRequest) {
       where: { bookingCode: code },
       include: {
         service: true,
+        member: {
+          select: {
+            memberCode: true,
+            name: true,
+          },
+        },
+        voucher: {
+          select: {
+            code: true,
+            nameId: true,
+            nameEn: true,
+            discountType: true,
+            discountValue: true,
+          },
+        },
       },
     })
 

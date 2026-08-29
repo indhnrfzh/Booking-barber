@@ -1,23 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { jwtVerify } from 'jose'
-
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || 'your-secret-key-change-in-production'
-)
+import { AdminAuthError, assertAdminToken } from '@/lib/auth'
 
 async function verifyAdminToken(request: NextRequest) {
-  const token = request.cookies.get('admin_token')?.value
-
-  if (!token) {
-    throw new Error('No token')
-  }
-
-  const verified = await jwtVerify(token, JWT_SECRET)
-
-  if (verified.payload.role !== 'admin') {
-    throw new Error('Not admin')
-  }
+  await assertAdminToken(request.cookies.get('admin_token')?.value)
 }
 
 export async function GET(request: NextRequest) {
@@ -67,11 +53,14 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(image, { status: 201 })
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Failed to create gallery image'
-    const isAuthError = error instanceof Error && error.message === 'No token'
+    if (error instanceof AdminAuthError) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    console.error('Error creating gallery image:', error)
     return NextResponse.json(
-      { error: message },
-      { status: isAuthError ? 401 : 500 }
+      { error: 'Failed to create gallery image' },
+      { status: 500 }
     )
   }
 }

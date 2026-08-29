@@ -58,6 +58,7 @@ describe('booking utils', () => {
     mockPrisma.service.findFirst.mockResolvedValue({
       id: 'svc-1',
       duration: 60,
+      price: 100000,
       isActive: true,
     })
     mockPrisma.schedule.findUnique.mockResolvedValue({
@@ -79,6 +80,7 @@ describe('booking utils', () => {
     mockPrisma.service.findFirst.mockResolvedValue({
       id: 'svc-1',
       duration: 60,
+      price: 100000,
       isActive: true,
     })
     mockPrisma.schedule.findUnique.mockResolvedValue({

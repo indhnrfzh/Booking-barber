@@ -70,8 +70,6 @@ Booking Barber gives barbershop owners a streamlined platform to manage appointm
 | [Next.js 16](https://nextjs.org) | React framework with App Router, SSR, and built-in API routes |
 | [React 19](https://react.dev) | UI library with latest hooks and concurrent features |
 | [Tailwind CSS 4](https://tailwindcss.com) | Utility-first CSS with JIT compilation |
-| [Framer Motion](https://www.framer.com/motion/) | Declarative, smooth animations |
-| [React Hook Form](https://react-hook-form.com) | Performant forms with minimal re-renders |
 
 ### Backend & Data
 
@@ -87,9 +85,7 @@ Booking Barber gives barbershop owners a streamlined platform to manage appointm
 
 | Library | Purpose |
 |---|---|
-| [Zod](https://zod.dev) | Runtime schema validation with TypeScript inference |
 | [bcryptjs](https://github.com/dcodeIO/bcrypt.js) | Password hashing (salt + GPU-resistant) |
-| [date-fns](https://date-fns.org) | Lightweight, functional date utilities |
 
 ---
 
@@ -230,11 +226,9 @@ POST  /api/admin/logout      Invalidate session
 ### Bookings
 
 ```
-GET    /api/bookings                List with pagination
-POST   /api/bookings                Create a new booking
-GET    /api/bookings/[id]           Get booking details
-PATCH  /api/bookings/[id]           Update booking status
-DELETE /api/bookings/[id]           Cancel a booking
+GET    /api/bookings?code=REF-XXXXXX   Get booking details by booking code
+POST   /api/bookings                   Create a new booking
+PUT    /api/bookings/[id]              Update booking status (admin)
 ```
 
 ### Services
@@ -242,15 +236,29 @@ DELETE /api/bookings/[id]           Cancel a booking
 ```
 GET    /api/services                List active services
 POST   /api/services                Create a service (admin)
-PATCH  /api/services/[id]           Update service details
-DELETE /api/services/[id]           Remove a service
+PUT    /api/services/[id]           Update service details (admin)
+DELETE /api/services/[id]           Remove a service (admin)
 ```
 
 ### Schedule
 
 ```
+GET    /api/schedule                List weekly operating hours
+PUT    /api/schedule/[dayOfWeek]    Update operating hours for a day (admin)
 GET    /api/schedule/slots?date=YYYY-MM-DD&serviceId=[id]
                                     Return available time slots
+```
+
+### Gallery, Testimonials & Settings
+
+```
+GET    /api/gallery                 List gallery images
+POST   /api/gallery                 Create a gallery image (admin)
+PUT    /api/gallery/[id]            Update a gallery image (admin)
+DELETE /api/gallery/[id]            Delete a gallery image (admin)
+GET    /api/testimonials            List active testimonials
+GET    /api/settings                Get site settings
+PUT    /api/settings/[key]          Update a site setting (admin)
 ```
 
 ---

@@ -1,16 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { jwtVerify } from 'jose'
-
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || 'your-secret-key-change-in-production'
-)
+import { AdminAuthError, assertAdminToken } from '@/lib/auth'
 
 async function verifyAdminToken(request: NextRequest) {
-  const token = request.cookies.get('admin_token')?.value
-  if (!token) throw new Error('No token')
-  const verified = await jwtVerify(token, JWT_SECRET)
-  if (verified.payload.role !== 'admin') throw new Error('Not admin')
+  await assertAdminToken(request.cookies.get('admin_token')?.value)
 }
 
 export async function PUT(
@@ -27,19 +20,15 @@ export async function PUT(
       return NextResponse.json({ error: 'valueId and valueEn are required' }, { status: 400 })
     }
 
-    const existing = await prisma.siteSettings.findUnique({ where: { key } })
-    if (!existing) {
-      return NextResponse.json({ error: 'Setting not found' }, { status: 404 })
-    }
-
-    const updated = await prisma.siteSettings.update({
+    const updated = await prisma.siteSettings.upsert({
       where: { key },
-      data: { valueId, valueEn },
+      create: { key, valueId, valueEn },
+      update: { valueId, valueEn },
     })
 
     return NextResponse.json({ setting: updated }, { status: 200 })
   } catch (error) {
-    if (error instanceof Error && (error.message === 'No token' || error.message === 'Not admin')) {
+    if (error instanceof AdminAuthError) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
     console.error('Error updating setting:', error)

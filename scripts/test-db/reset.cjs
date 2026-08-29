@@ -25,7 +25,8 @@ async function run(command, label) {
         throw error
       }
 
-      const waitMs = attempt * 5000
+      const waitMs = attempt * 3000
+      console.log(`Retry attempt ${attempt} for ${label} after advisory lock / timeout (waiting ${waitMs}ms)...`)
       await sleep(waitMs)
     }
   }
@@ -59,6 +60,7 @@ async function resetSchemaDirectly() {
 async function main() {
   console.log('Resetting test database...')
   await resetSchemaDirectly()
+  await sleep(1500)
   console.log('Applying latest test schema...')
   await run('npx prisma migrate deploy', 'migrate deploy')
   console.log('Test DB reset completed.')

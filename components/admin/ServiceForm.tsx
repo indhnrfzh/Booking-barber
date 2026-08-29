@@ -13,6 +13,9 @@ interface ServiceFormProps {
   onSuccess: () => void
 }
 
+// Data URLs are stored directly in the DB, so cap file size to keep rows small.
+const MAX_IMAGE_FILE_SIZE = 1024 * 1024 // 1MB
+
 export function ServiceForm({ service, onClose, onSuccess }: ServiceFormProps) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
@@ -41,6 +44,12 @@ export function ServiceForm({ service, onClose, onSuccess }: ServiceFormProps) {
 
     if (!file.type.startsWith('image/')) {
       toast.error('Please select an image file')
+      event.target.value = ''
+      return
+    }
+
+    if (file.size > MAX_IMAGE_FILE_SIZE) {
+      toast.error('Image must be smaller than 1MB. Use an image URL for larger files.')
       event.target.value = ''
       return
     }

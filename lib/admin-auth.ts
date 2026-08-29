@@ -1,10 +1,6 @@
 import { cookies } from 'next/headers'
-import { jwtVerify } from 'jose'
 import { redirect } from 'next/navigation'
-
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || 'your-secret-key-change-in-production'
-)
+import { verifyToken } from '@/lib/auth'
 
 export async function getAdminUser() {
   const cookieStore = await cookies()
@@ -14,15 +10,15 @@ export async function getAdminUser() {
     redirect('/admin/login')
   }
 
-  try {
-    const verified = await jwtVerify(token, JWT_SECRET)
+  const payload = await verifyToken(token)
 
-    return {
-      id: verified.payload.sub as string,
-      username: verified.payload.username as string,
-      role: verified.payload.role as string,
-    }
-  } catch {
+  if (!payload || payload.role !== 'admin') {
     redirect('/admin/login')
+  }
+
+  return {
+    id: payload.sub as string,
+    username: payload.username as string,
+    role: payload.role as string,
   }
 }

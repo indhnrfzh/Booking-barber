@@ -14,6 +14,10 @@ interface BookingsTableProps {
       nameEn: string
       price: number
     }
+    member?: {
+      memberCode: string
+      name: string
+    } | null
   })[]
 }
 
@@ -179,6 +183,11 @@ export function BookingsTable({ bookings }: BookingsTableProps) {
                   <td className="px-4 py-3">
                     <div className="text-[#F5F5F0]">{booking.customerName}</div>
                     <div className="text-xs text-[#808078]">{booking.customerPhone}</div>
+                    {booking.member && (
+                      <span className="inline-block mt-0.5 text-[11px] font-mono text-[#C9A84C] bg-[#C9A84C]/10 px-1.5 py-0.2 rounded border border-[#C9A84C]/30">
+                        👑 {booking.member.memberCode}
+                      </span>
+                    )}
                   </td>
                   <td className="px-4 py-3 text-[#F5F5F0]">{booking.service.nameId}</td>
                   <td className="px-4 py-3 text-[#F5F5F0]">

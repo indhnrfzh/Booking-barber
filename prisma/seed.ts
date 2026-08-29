@@ -26,7 +26,12 @@ function normalizeDatabaseUrl(rawUrl: string): string {
 
 function getSchemaSearchPath(rawUrl: string): string | undefined {
   try {
-    const schema = new URL(rawUrl).searchParams.get('schema')
+    const url = new URL(rawUrl)
+    // Neon pooler does not support startup options; omit to avoid connection errors
+    if (url.hostname.includes('pooler')) {
+      return undefined
+    }
+    const schema = url.searchParams.get('schema')
     return schema ? `-c search_path=${schema}` : undefined
   } catch {
     return undefined
@@ -58,8 +63,12 @@ async function hashPassword(password: string) {
 async function main() {
   console.log('🌱 Starting seed...')
 
-  // Clear existing data
+  // Clear existing data in foreign key dependency order
+  await prisma.pointLedger.deleteMany({})
   await prisma.booking.deleteMany({})
+  await prisma.voucher.deleteMany({})
+  await prisma.reward.deleteMany({})
+  await prisma.member.deleteMany({})
   await prisma.service.deleteMany({})
   await prisma.schedule.deleteMany({})
   await prisma.galleryImage.deleteMany({})
@@ -369,7 +378,7 @@ async function main() {
   // Create Site Settings
   console.log('⚙️ Creating site settings...')
   const settingsData = [
-    { key: 'phone', valueId: '+62 858-1234-5678', valueEn: '+62 858-1234-5678' },
+    { key: 'phone', valueId: '+62 857-5186-4219', valueEn: '+62 857-5186-4219' },
     { key: 'email', valueId: 'info@prestigebarbershop.id', valueEn: 'info@prestigebarbershop.id' },
     { key: 'address', valueId: 'Jl. Merdeka No. 123, Jakarta Selatan 12345', valueEn: 'Jl. Merdeka No. 123, South Jakarta 12345' },
     { key: 'footer_about', valueId: 'Prestige Barbershop adalah tempat di mana gaya bertemu dengan presisi. Kami berkomitmen memberikan layanan barbershop kelas dunia.', valueEn: 'Prestige Barbershop is where style meets precision. We are committed to delivering world-class barbershop services.' },
@@ -380,6 +389,12 @@ async function main() {
     { key: 'stat2_label', valueId: 'Tahun Pengalaman', valueEn: 'Years of Experience' },
     { key: 'stat3_value', valueId: '5★', valueEn: '5★' },
     { key: 'stat3_label', valueId: 'Rating', valueEn: 'Rating' },
+    { key: 'reminder_interval_days', valueId: '30', valueEn: '30' },
+    {
+      key: 'reminder_template',
+      valueId: 'Halo {name}! 💈 Sudah waktunya rapikan rambutmu kembali di Prestige Barbershop. Kamu punya {points} poin untuk ditukar diskon. Booking jadwalmu di sini: {link}',
+      valueEn: 'Hello {name}! 💈 Time for your fresh haircut at Prestige Barbershop. You have {points} loyalty points. Book your slot here: {link}',
+    },
   ]
   await Promise.all(
     settingsData.map((s) =>
@@ -387,6 +402,65 @@ async function main() {
     )
   )
   console.log(`✅ Created ${settingsData.length} site settings`)
+
+  // Create Rewards
+  console.log('🎁 Creating loyalty rewards...')
+  const rewards = await Promise.all([
+    prisma.reward.create({
+      data: {
+        nameId: 'Diskon 10% Semua Layanan',
+        nameEn: '10% Discount All Services',
+        pointsCost: 100,
+        discountType: 'PERCENT',
+        discountValue: 10,
+        isActive: true,
+        order: 1,
+      },
+    }),
+    prisma.reward.create({
+      data: {
+        nameId: 'Potongan Langsung Rp 20.000',
+        nameEn: 'IDR 20,000 Direct Off',
+        pointsCost: 150,
+        discountType: 'FIXED',
+        discountValue: 20000,
+        isActive: true,
+        order: 2,
+      },
+    }),
+    prisma.reward.create({
+      data: {
+        nameId: 'Diskon 25% Paket Lengkap',
+        nameEn: '25% Discount Grooming Package',
+        pointsCost: 250,
+        discountType: 'PERCENT',
+        discountValue: 25,
+        isActive: true,
+        order: 3,
+      },
+    }),
+  ])
+  console.log(`✅ Created ${rewards.length} loyalty rewards`)
+
+  // Create Demo Member
+  console.log('👤 Creating demo member...')
+  const demoMember = await prisma.member.create({
+    data: {
+      memberCode: 'MBR-DEMO01',
+      name: 'Budi Santoso',
+      phone: '6281234567890',
+      email: 'budi.member@example.com',
+      waOptIn: true,
+    },
+  })
+  await prisma.pointLedger.create({
+    data: {
+      memberId: demoMember.id,
+      delta: 150,
+      note: 'Bonus selamat datang',
+    },
+  })
+  console.log('✅ Created demo member (code: MBR-DEMO01, balance: 150 points)')
 
   // Create default Admin account
   console.log('🔐 Creating admin account...')

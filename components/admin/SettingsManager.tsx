@@ -24,9 +24,15 @@ const SETTING_META: Record<string, { label: string; group: string; multiline?: b
   stat2_label: { label: 'Stat 2 — Label', group: 'About Stats' },
   stat3_value: { label: 'Stat 3 — Value (e.g. 5★)', group: 'About Stats' },
   stat3_label: { label: 'Stat 3 — Label', group: 'About Stats' },
+  reminder_interval_days: { label: 'Reminder Interval (Days after last visit)', group: 'Reminders' },
+  reminder_template: {
+    label: 'WhatsApp Reminder Message Template ({name}, {points}, {link}, {memberCode})',
+    group: 'Reminders',
+    multiline: true,
+  },
 }
 
-const GROUPS = ['Contact', 'About Stats', 'Footer']
+const GROUPS = ['Contact', 'Reminders', 'About Stats', 'Footer']
 
 export function SettingsManager({ initialSettings }: SettingsManagerProps) {
   const [saved, setSaved] = useState<Record<string, Setting>>(initialSettings)

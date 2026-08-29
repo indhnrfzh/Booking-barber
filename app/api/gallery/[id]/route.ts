@@ -1,23 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { jwtVerify } from 'jose'
-
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || 'your-secret-key-change-in-production'
-)
+import { AdminAuthError, assertAdminToken } from '@/lib/auth'
 
 async function verifyAdminToken(request: NextRequest) {
-  const token = request.cookies.get('admin_token')?.value
-
-  if (!token) {
-    throw new Error('No token')
-  }
-
-  const verified = await jwtVerify(token, JWT_SECRET)
-
-  if (verified.payload.role !== 'admin') {
-    throw new Error('Not admin')
-  }
+  await assertAdminToken(request.cookies.get('admin_token')?.value)
 }
 
 export async function PUT(
@@ -45,14 +31,16 @@ export async function PUT(
 
     return NextResponse.json(image)
   } catch (error) {
+    if (error instanceof AdminAuthError) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
     if (error instanceof Error && 'code' in error && (error as NodeJS.ErrnoException).code === 'P2025') {
       return NextResponse.json({ error: 'Gallery image not found' }, { status: 404 })
     }
-    const message = error instanceof Error ? error.message : 'Failed to update gallery image'
-    const isAuthError = error instanceof Error && error.message === 'No token'
+    console.error('Error updating gallery image:', error)
     return NextResponse.json(
-      { error: message },
-      { status: isAuthError ? 401 : 500 }
+      { error: 'Failed to update gallery image' },
+      { status: 500 }
     )
   }
 }
@@ -72,14 +60,16 @@ export async function DELETE(
 
     return NextResponse.json({ success: true })
   } catch (error) {
+    if (error instanceof AdminAuthError) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
     if (error instanceof Error && 'code' in error && (error as NodeJS.ErrnoException).code === 'P2025') {
       return NextResponse.json({ error: 'Gallery image not found' }, { status: 404 })
     }
-    const message = error instanceof Error ? error.message : 'Failed to delete gallery image'
-    const isAuthError = error instanceof Error && error.message === 'No token'
+    console.error('Error deleting gallery image:', error)
     return NextResponse.json(
-      { error: message },
-      { status: isAuthError ? 401 : 500 }
+      { error: 'Failed to delete gallery image' },
+      { status: 500 }
     )
   }
 }

@@ -28,6 +28,10 @@ describe('PUT /api/bookings/[id]', () => {
       throw new Error('Seed data is missing active service for booking status integration test.')
     }
 
+    await integrationPrisma.booking.deleteMany({
+      where: { bookingCode: 'REF-STAT01' },
+    })
+
     const booking = await integrationPrisma.booking.create({
       data: {
         bookingCode: 'REF-STAT01',

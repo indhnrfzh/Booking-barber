@@ -43,6 +43,10 @@ model Booking {
   customerEmail   String
   service         Service       @relation(fields: [serviceId], references: [id], onDelete: Cascade)
   serviceId       String
+  member          Member?       @relation(fields: [memberId], references: [id], onDelete: SetNull)
+  memberId        String?
+  voucher         Voucher?      @relation(fields: [voucherId], references: [id], onDelete: SetNull)
+  voucherId       String?       @unique
   bookingDate     DateTime      // tanggal booking (hanya date part yang penting)
   timeSlot        String        // "10:00"
   status          BookingStatus @default(PENDING)
@@ -53,6 +57,7 @@ model Booking {
   @@index([serviceId])
   @@index([bookingDate])
   @@index([status])
+  @@index([memberId])
 }
 
 enum BookingStatus {
@@ -60,6 +65,84 @@ enum BookingStatus {
   CONFIRMED
   CANCELLED
   COMPLETED
+}
+
+enum DiscountType {
+  PERCENT
+  FIXED
+}
+
+enum VoucherStatus {
+  ACTIVE
+  USED
+  EXPIRED
+}
+
+model Member {
+  id             String        @id @default(cuid())
+  memberCode     String        @unique // MBR-XXXXXX format
+  name           String
+  phone          String
+  email          String        @unique
+  waOptIn        Boolean       @default(false)
+  lastReminderAt DateTime?
+  bookings       Booking[]
+  pointLedgers   PointLedger[]
+  vouchers       Voucher[]
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@index([phone])
+}
+
+model PointLedger {
+  id        String   @id @default(cuid())
+  member    Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  memberId  String
+  bookingId String?  @unique // Idempoten: 1 booking COMPLETED hanya earn 1x
+  voucherId String?  @unique // 1 voucher redeemed mencatat 1 spend
+  delta     Int      // Positif (earn) atau negatif (spend)
+  note      String?
+  createdAt DateTime @default(now())
+
+  @@index([memberId])
+}
+
+model Reward {
+  id            String       @id @default(cuid())
+  nameId        String
+  nameEn        String
+  pointsCost    Int
+  discountType  DiscountType
+  discountValue Int          // Persen (misal 10 untuk 10%) atau Rupiah (misal 20000)
+  isActive      Boolean      @default(true)
+  order         Int          @default(0)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@index([isActive])
+  @@index([order])
+}
+
+model Voucher {
+  id            String        @id @default(cuid())
+  code          String        @unique // VCR-XXXXXX format
+  member        Member        @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  memberId      String
+  nameId        String        // Snapshot nama reward saat redeem
+  nameEn        String
+  discountType  DiscountType
+  discountValue Int
+  pointsCost    Int
+  status        VoucherStatus @default(ACTIVE)
+  expiresAt     DateTime
+  usedAt        DateTime?
+  booking       Booking?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([memberId])
+  @@index([status])
 }
 
 model Admin {

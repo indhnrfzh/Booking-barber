@@ -34,7 +34,12 @@ const normalizedDatabaseUrl = normalizeDatabaseUrl(databaseUrl)
 
 function getSchemaSearchPath(rawUrl: string): string | undefined {
   try {
-    const schema = new URL(rawUrl).searchParams.get('schema')
+    const url = new URL(rawUrl)
+    // Neon pooler does not support startup options; omit to avoid connection errors
+    if (url.hostname.includes('pooler')) {
+      return undefined
+    }
+    const schema = url.searchParams.get('schema')
     return schema ? `-c search_path=${schema}` : undefined
   } catch {
     return undefined

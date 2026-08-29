@@ -6,7 +6,7 @@ import { getAdminUser } from '@/lib/admin-auth'
 export default async function AdminDashboardPage() {
   const admin = await getAdminUser()
 
-  // Fetch bookings with service data
+  // Fetch bookings with service and member data
   const bookings = await prisma.booking.findMany({
     include: {
       service: {
@@ -14,6 +14,12 @@ export default async function AdminDashboardPage() {
           nameId: true,
           nameEn: true,
           price: true,
+        },
+      },
+      member: {
+        select: {
+          memberCode: true,
+          name: true,
         },
       },
     },
